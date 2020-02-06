@@ -1,0 +1,168 @@
+<div class="container">
+   <div class="row">
+      <div class="col s12 m4">
+         <img src="{{product.photo.fields.file.url}}" width="100%" alt="">
+      </div>
+      <div class="col s12 m8">
+         <h3>{{product.name}}</h3>
+         <p>{{product.description}}</p>
+         <h4 class="light">R$ {{product.price}}</h4>
+         <ul class="stepper linear active">
+
+
+            {{!-- <li class="step">
+               <div class="step-title waves-effect">Quantidade</div>
+               <div class="step-content">
+                  <div class="row">
+                     <div class="input-field col s6">
+                        <input id="quantity" type="number" value="1" class="validate" required>
+                        <label for="quantity">Quantidade</label>
+                     </div>
+                  </div>
+                  <div class="step-actions">
+                     <button class="waves-effect blue waves-dark btn next-step">CONTINUE</button>
+                  </div>
+               </div>
+            </li> --}}
+
+            <li class="step">
+               <div class="step-title waves-effect">Um pouco sobre você</div>
+               <div class="step-content">
+                  <div class="row">
+                     <div class="input-field col s6">
+                        <input id="name" type="text" class="validate" required>
+                        <label for="name">Nome</label>
+                     </div>
+                     <div class="input-field col s6">
+                        <input id="last_name" type="text" class="validate" required>
+                        <label for="last_name">Sobrenome</label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s6">
+                        <input id="email" type="email" class="validate" required>
+                        <label for="email">Email</label>
+                     </div>
+                     <div class="input-field col s6">
+                        <input id="phone" type="text" class="validate" required>
+                        <label for="phone">Celular</label>
+                     </div>
+                  </div>
+                  <div class="step-actions">
+                     <button class="waves-effect blue waves-dark btn next-step" data-feedback="savePersonalData">CONTINUAR</button>
+                  </div>
+               </div>
+            </li>
+
+            <li class="step">
+               <div class="step-title waves-effect">Endereço</div>
+               <div class="step-content">
+                  <div class="row">
+                     <div class="input-field col s4">
+                        <input id="cep" type="text" class="validate" required>
+                        <label for="cep">CEP</label>
+                     </div>
+                     <div class="input-field col s2">
+                        <input id="estado" type="text" class="validate" required>
+                        <label for="estado">Estado</label>
+                     </div>
+                     <div class="input-field col s6">
+                        <input id="cidade" type="text" class="validate" required>
+                        <label for="cidade">Cidade</label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s6">
+                        <input id="endereco" type="text" class="validate" required>
+                        <label for="endereco">Endereço</label>
+                     </div>
+                     <div class="input-field col s6">
+                        <input id="numero" type="text" class="validate" required>
+                        <label for="numero">Número</label>
+                     </div>
+                  </div>
+                  <div class="step-actions">
+                     <button class="waves-effect blue waves-dark btn next-step" data-feedback="saveAddress">PAGAR</button>
+                  </div>
+               </div>
+            </li>
+
+         </ul>
+      </div>
+   </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-firestore.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://unpkg.com/materialize-stepper@3.1.0/dist/js/mstepper.min.js"></script>
+<script>
+   var uniqueId = '{{orderId}}';
+
+   // Your web app's Firebase configuration
+   var firebaseConfig = {
+      apiKey: "AIzaSyD7nJgN2LaPuHmCk03mdxGlPYoPuj9C7io",
+      authDomain: "teste-checkout-b6649.firebaseapp.com",
+      databaseURL: "https://teste-checkout-b6649.firebaseio.com",
+      projectId: "teste-checkout-b6649",
+      storageBucket: "teste-checkout-b6649.appspot.com",
+      messagingSenderId: "117973974276",
+      appId: "1:117973974276:web:ad0f87b11d12854924a451"
+   };
+   // Initialize Firebase
+   firebase.initializeApp(firebaseConfig);
+
+   var db = firebase.firestore()
+
+   var stepper = document.querySelector('.stepper');
+   var stepperInstace = new MStepper(stepper, {
+      firstActive: 0,
+      autoFormCreation: true
+   })
+
+   function savePersonalData(destroyLoader) {
+      var quantity = 1;
+      var name = document.querySelector('#name').value;
+      var last_name = document.querySelector('#last_name').value;
+      var email = document.querySelector('#email').value;
+      var phone = document.querySelector('#phone').value;
+      db
+         .collection('orders')
+         .doc(uniqueId)
+         .set({
+            uid: uniqueId,
+            quantity: quantity,
+            name: name,
+            last_name: last_name,
+            email: email,
+            phone: phone
+         }).then(function () {
+            destroyLoader(true);
+         }).catch(function () {
+            destroyLoader();
+         })
+   }
+
+   function saveAddress(destroyLoader) {
+      var cep = document.querySelector('#cep').value;
+      var estado = document.querySelector('#estado').value;
+      var cidade = document.querySelector('#cidade').value;
+      var endereco = document.querySelector('#endereco').value;
+      var numero = document.querySelector('#numero').value;
+
+      db
+         .collection('orders')
+         .doc(uniqueId)
+         .update({
+            cep: cep,
+            estado: estado,
+            cidade: cidade,
+            endereco: endereco,
+            numero: numero
+         }).then(function () {
+            window.location.href = '{{init_point}}';
+         }).catch(function () {
+            destroyLoader();
+         })
+   }
+</script>

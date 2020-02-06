@@ -1,0 +1,23 @@
+<div class="container">
+   <div class="section">
+      <h2 class="light">Produtos</h2>
+      <div class="row">
+         {{#each products}}
+         <div class="col s12 m4">
+            <div class="card">
+               <div class="card-image">
+                  <img src="{{photo.fields.file.url}}" alt="">
+                  <span class="card-title">{{name}}</span>
+               </div>
+               <div class="card-content">
+                  <p>{{description}}</p>
+               </div>
+               <div class="card-action">
+                  <a href="/product/{{id}}">Visitar página</a>
+               </div>
+            </div>
+         </div>
+         {{/each}}
+      </div>
+   </div>
+</div>
